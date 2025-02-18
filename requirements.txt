@@ -11,4 +11,6 @@ soupsieve==2.4.1
 sqlparse==0.4.4
 typing_extensions==4.6.3
 urllib3==2.0.2
-Pillow==11.1.0
+pillow==11.1.0
+flask==2.0.3
+Werkzeug==2.0.3
