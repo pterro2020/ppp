@@ -1,0 +1,28 @@
+name: DAST with ZAP
+
+on:
+  workflow_run:
+    workflows: ["SAST with CodeQL"]
+    types: [completed]
+
+jobs:
+  dast:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy App
+      run: |
+        chmod +x deploy.sh
+        ./deploy.sh
+
+    - name: Setup ZAP
+      uses: zaproxy/actions-full-scan@v0.6.0
+      with:
+        target: ${{ env.APP_URL }}
+        format: markdown
+        report: report-dast.md
+
+    - name: Upload Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: dast-report
+        path: report-dast.md
