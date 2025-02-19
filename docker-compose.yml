@@ -4,16 +4,18 @@ services:
   web:
     build: .
     container_name: django_app
+    restart: unless-stopped  # Авторестарт при сбоях
     volumes:
-      - .:/app
-      - static_volume:/app/static  # Для статических файлов (опционально)
+      - static_volume:/app/static  # Постоянное хранение статики
     ports:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings.production  # Продакшен-настройки
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py collectstatic --no-input &&
+             gunicorn myproject.wsgi:application --bind 0.0.0.0:8000"  # Используем Gunicorn
 
 volumes:
-  static_volume:  # Удалите, если не используете статические файлы
+  static_volume:
