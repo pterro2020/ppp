@@ -8,20 +8,39 @@ on:
 jobs:
   dast:
     runs-on: ubuntu-latest
-    steps:
-    - name: Deploy App
-      run: |
-        chmod +x deploy.sh
-        ./deploy.sh
 
-    - name: Setup ZAP
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Copy Files to Remote Server
+      uses: appleboy/scp-action@v0.1.3
+      with:
+        host: 158.160.4.189
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        source: "."
+        target: "/home/ubuntu/ppp"
+
+    - name: Deploy on Remote Server
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: 158.160.4.189
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /home/ubuntu/ppp
+          chmod +x deploy.sh
+          ./deploy.sh
+
+    - name: ZAP Full Scan
       uses: zaproxy/actions-full-scan@v0.6.0
       with:
-        target: ${{ env.APP_URL }}
+        target: "http://158.160.4.189"
         format: markdown
         report: report-dast.md
 
-    - name: Upload Report
+    - name: Upload DAST Report
       uses: actions/upload-artifact@v3
       with:
         name: dast-report
