@@ -1,0 +1,34 @@
+name: Security Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: SAST with CodeQL
+        uses: github/codeql-action@v2
+
+  dast:
+    needs: sast
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Server
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          chmod 600 key.pem
+          scp -i key.pem deploy.sh user@$SERVER_IP:/home/user/
+          ssh -i key.pem user@$SERVER_IP "bash /home/user/deploy.sh"
+      - name: Run ZAP Scan
+        run: bash dast.sh
+      - name: Upload DAST Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dast-report
+          path: zap_report.html
