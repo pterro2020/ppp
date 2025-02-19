@@ -4,32 +4,26 @@ FROM python:3.9-slim
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
+# Установка системных зависимостей
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Копируем зависимости Python
 COPY requirements.txt .
 
 # Устанавливаем зависимости Python
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
 
-# Копируем статические файлы (HTML, CSS, JS)
-COPY static ./static
-COPY templates ./templates
+# Копируем исходный код
+COPY . .
 
-# Копируем исходный код Python
-COPY *.py ./
-
-# Устанавливаем Node.js (если требуется для JavaScript)
-RUN apt-get update && apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g npm@latest
-
-# Устанавливаем зависимости JavaScript (если есть package.json)
-COPY package.json .
-COPY package-lock.json .
-RUN npm install
+# Сборка статики (если требуется)
+RUN python manage.py collectstatic --no-input
 
 # Открываем порт для веб-приложения
 EXPOSE 8000
 
 # Команда для запуска приложения
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "myproject.wsgi:application", "--bind", "0.0.0.0:8000"]
