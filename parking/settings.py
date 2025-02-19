@@ -13,7 +13,22 @@ import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Базовый путь проекта
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Статические файлы (CSS, JS, изображения)
+STATIC_URL = '/static/'  # URL для доступа к статике
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Куда собирать статику через collectstatic
+
+# Медиафайлы (загружаемые пользователями)
+MEDIA_URL = '/media/'  # URL для доступа к медиа
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Папка для хранения медиафайлов
+
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,8 +43,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['localhost']
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_URL = '/media/'
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Application definition
 
@@ -119,7 +134,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -128,4 +143,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
-STATIC_ROOT = '/app/static'  # Путь в контейнере
+#STATIC_ROOT = '/app/static'  # Путь в контейнере
