@@ -12,5 +12,4 @@ sqlparse==0.4.4
 typing_extensions==4.6.3
 urllib3==2.0.2
 pillow==11.1.0
-flask==2.3.2
 Werkzeug==2.0.3
