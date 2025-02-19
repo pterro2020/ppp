@@ -1,25 +1,35 @@
-# Базовый образ Python
+# Используем официальный образ Python
 FROM python:3.9-slim
 
-# Установка зависимостей
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Рабочая директория
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копирование зависимостей
+# Копируем зависимости Python
 COPY requirements.txt .
 
-# Установка Python-зависимостей
+# Устанавливаем зависимости Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копирование проекта
-COPY . .
+# Копируем статические файлы (HTML, CSS, JS)
+COPY static ./static
+COPY templates ./templates
 
-# Порт для Django
-EXPOSE 8000
+# Копируем исходный код Python
+COPY *.py ./
 
-# Команда для запуска сервера
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Устанавливаем Node.js (если требуется для JavaScript)
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest
+
+# Устанавливаем зависимости JavaScript (если есть package.json)
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
+
+# Открываем порт для веб-приложения
+EXPOSE 5000
+
+# Команда для запуска приложения
+CMD ["python", "app.py"]
