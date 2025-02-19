@@ -5,8 +5,16 @@ services:
     build: .
     container_name: django_app
     restart: unless-stopped  # Авторестарт при сбоях
+    
     volumes:
-      - static_volume:/app/static  # Постоянное хранение статики
+      - static_volume:/app/staticfiles  # Для статики
+      - media_volume:/app/media         # Для медиа
+    environment:
+      - STATIC_ROOT=/app/staticfiles
+      - MEDIA_ROOT=/app/media
+
+
+      
     ports:
       - "8000:8000"
     environment:
