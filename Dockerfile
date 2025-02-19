@@ -29,7 +29,7 @@ COPY package-lock.json .
 RUN npm install
 
 # Открываем порт для веб-приложения
-EXPOSE 5000
+EXPOSE 8000
 
 # Команда для запуска приложения
 CMD ["python", "app.py"]
