@@ -23,7 +23,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --no-input &&
-             gunicorn myproject.wsgi:application --bind 0.0.0.0:8000"  # Используем Gunicorn
+             gunicorn myproject.wsgi:application --bind 158.160.4.189:8000"  # Используем Gunicorn
 
 volumes:
   static_volume:
