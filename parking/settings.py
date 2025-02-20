@@ -26,11 +26,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Куда собирать
 MEDIA_URL = '/media/'  # URL для доступа к медиа
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Папка для хранения медиафайлов
 
-
-
-
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
