@@ -1,24 +1,32 @@
-# Используем официальный образ Python
+# Базовый образ Python
 FROM python:3.9-slim
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
-
-# Установка системных зависимостей
-RUN apt-get update && apt-get install -y \
-    gcc \
-    python3-dev \
+# Установка зависимостей
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    nginx \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем зависимости Python
+# Рабочая директория
+WORKDIR /app
+
+# Копирование зависимостей
 COPY requirements.txt .
 
-# Устанавливаем зависимости Python
-RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
+# Установка Python-зависимостей
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем исходный код
+# Копирование проекта
 COPY . .
 
+# Копирование конфигурации Nginx
+COPY nginx.conf /etc/nginx/sites-available/default
+
+# Порт для Django
+EXPOSE 8000
+
+# Команда для запуска сервера
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && service nginx start && python manage.py runserver 0.0.0.0:8000"]
 # Сборка статики (если требуется)
 RUN python manage.py collectstatic --no-input
 
