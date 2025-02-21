@@ -34,4 +34,4 @@ RUN python manage.py collectstatic --no-input
 EXPOSE 8000
 
 # Команда для запуска приложения
-CMD ["gunicorn", "myproject.wsgi:application", "--bind", "158.160.4.189:8000"]
+CMD ["gunicorn", "myproject.wsgi:application", "--bind", "89.169.164.174:8000"]
